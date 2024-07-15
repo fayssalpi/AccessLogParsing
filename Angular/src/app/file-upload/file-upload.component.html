@@ -1,20 +1,43 @@
-<div *ngIf="chartData && chartData.length > 0">
-    <ngx-charts-pie-chart
-      [results]="chartData"
-      [view]="[700, 400]"
-      [scheme]="colorScheme"
-      [gradient]="true"
-      [legend]="true"
-      [labels]="true"
-      [doughnut]="false"
-      [arcWidth]="0.25"
-      [explodeSlices]="false"
-      [animations]="true">
-    </ngx-charts-pie-chart>
-  </div>
-  
-  <div *ngIf="isLoading">Loading...</div>
-  
-  <input type="file" (change)="onFileSelected($event)" />
+<div>
+  <h2>Upload Log File</h2>
+  <input type="file" (change)="onFileSelected($event)">
   <button (click)="onUpload()">Upload</button>
-  
+  <div *ngIf="isLoading">Loading...</div>
+</div>
+
+<div *ngIf="statusChartData.length > 0">
+  <ngx-charts-bar-vertical
+    [view]="[700, 400]"
+    [scheme]="statusColorScheme"
+    [results]="statusChartData"
+    [legend]="true"
+    [xAxis]="true"
+    [yAxis]="true"
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true"
+    [xAxisLabel]="'Status Code'"
+    [yAxisLabel]="'Count'">
+  </ngx-charts-bar-vertical>
+</div>
+
+<div *ngIf="browserFamilyChartData.length > 0">
+  <ngx-charts-pie-chart
+    [view]="[700, 400]"
+    [scheme]="browserFamilyColorScheme"
+    [results]="browserFamilyChartData"
+    [legend]="true"
+    [labels]="true"
+    [doughnut]="true">
+  </ngx-charts-pie-chart>
+</div>
+
+<div *ngIf="osFamilyChartData.length > 0">
+  <ngx-charts-pie-chart
+    [view]="[700, 400]"
+    [scheme]="osFamilyColorScheme"
+    [results]="osFamilyChartData"
+    [legend]="true"
+    [labels]="true"
+    [doughnut]="true">
+  </ngx-charts-pie-chart>
+</div>

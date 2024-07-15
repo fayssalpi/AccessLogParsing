@@ -3,7 +3,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LogWebSocketService } from '../aaServices/log-websocket.service';
 import { CommonModule } from '@angular/common';
 import { NgxChartsModule, Color, ScaleType } from '@swimlane/ngx-charts';
-import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-file-upload',
@@ -15,19 +14,33 @@ import { ChangeDetectorRef } from '@angular/core';
 export class FileUploadComponent implements OnInit {
   selectedFile: File | null = null;
   isLoading: boolean = false;
-  chartData: any[] = [];
-  colorScheme: Color = {
+  statusChartData: any[] = [];
+  browserFamilyChartData: any[] = [];
+  osFamilyChartData: any[] = [];
+
+
+  statusColorScheme: Color = {
     name: 'custom',
     selectable: true,
     group: ScaleType.Ordinal,
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
-  constructor(
-    private http: HttpClient, 
-    private logWebSocketService: LogWebSocketService,
-    private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
-  ) {}
+  browserFamilyColorScheme: Color = {
+    name: 'custom',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+  };
+
+  osFamilyColorScheme: Color = {
+    name: 'custom',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a']
+  };
+
+  constructor(private http: HttpClient, private logWebSocketService: LogWebSocketService) {}
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -52,26 +65,59 @@ export class FileUploadComponent implements OnInit {
 
   ngOnInit() {
     this.logWebSocketService.getLogUpdates().subscribe(data => {
-      console.log('Received data from WebSocket:', data);
-      this.updateChart(data);
+      console.log('Received status data from WebSocket:', data);
+      this.updateStatusChart(data);
     });
 
-    // Uncomment the following lines to test with dummy data initially
-    // this.updateChart({
+    this.logWebSocketService.getBrowserFamilyUpdates().subscribe(data => {
+      console.log('Received browser family data from WebSocket:', data);
+      this.updateBrowserFamilyChart(data);
+    });
+
+    this.logWebSocketService.getOsFamilyUpdates().subscribe(data => {
+      console.log('Received OS family data from WebSocket:', data);
+      this.updateOsFamilyChart(data);
+    });
+
+// Uncomment the following lines to test with dummy data initially
+    // this.updateStatusChart({
     //   '200': 2798704,
     //   '404': 30250,
     //   '500': 63770
     // });
+
+    // this.updateBrowserFamilyChart({
+    //   'Chrome': 500,
+    //   'Firefox': 300
+    // });
+
+    // this.updateOsFamilyChart({
+    //   'Android': 600,
+    //   'iOS': 200
+    // });
   }
 
-  updateChart(data: any) {
-    this.chartData = Object.keys(data).map(key => ({
+  updateStatusChart(data: any) {
+    this.statusChartData = Object.keys(data).map(key => ({
       name: key,
       value: data[key]
     }));
-    console.log('Updated chart data:', this.chartData);
+    console.log('Updated status chart data:', this.statusChartData);
+  }
 
-    // Trigger change detection to update the chart
-    this.cdr.detectChanges();
+  updateBrowserFamilyChart(data: any) {
+    this.browserFamilyChartData = Object.keys(data).map(key => ({
+      name: key,
+      value: data[key]
+    }));
+    console.log('Updated browser family chart data:', this.browserFamilyChartData);
+  }
+
+  updateOsFamilyChart(data: any) {
+    this.osFamilyChartData = Object.keys(data).map(key => ({
+      name: key,
+      value: data[key]
+    }));
+    console.log('Updated OS family chart data:', this.osFamilyChartData);
   }
 }

@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 export class LogWebSocketService {
   private client: Client;
   private logUpdateSubject = new Subject<any>();
+  private browserFamilyUpdateSubject = new Subject<any>();
+  private osFamilyUpdateSubject = new Subject<any>();
 
   constructor() {
     this.client = new Client({
@@ -19,9 +21,21 @@ export class LogWebSocketService {
     });
 
     this.client.onConnect = () => {
-      this.client.subscribe('/topic/logs', (message: IMessage) => {
+      this.client.subscribe('/topic/statuses', (message: IMessage) => {
         if (message.body) {
           this.logUpdateSubject.next(JSON.parse(message.body));
+        }
+      });
+
+      this.client.subscribe('/topic/browserFamilies', (message: IMessage) => {
+        if (message.body) {
+          this.browserFamilyUpdateSubject.next(JSON.parse(message.body));
+        }
+      });
+
+      this.client.subscribe('/topic/osFamilies', (message: IMessage) => {
+        if (message.body) {
+          this.osFamilyUpdateSubject.next(JSON.parse(message.body));
         }
       });
     };
@@ -31,5 +45,13 @@ export class LogWebSocketService {
 
   getLogUpdates() {
     return this.logUpdateSubject.asObservable();
+  }
+
+  getBrowserFamilyUpdates() {
+    return this.browserFamilyUpdateSubject.asObservable();
+  }
+
+  getOsFamilyUpdates() {
+    return this.osFamilyUpdateSubject.asObservable();
   }
 }
