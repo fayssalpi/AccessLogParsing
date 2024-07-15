@@ -1,0 +1,31 @@
+<div>
+    <h2>Errors</h2>
+    <ul>
+      <li *ngFor="let log of logs.errors">{{ log | json }}</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Severities</h2>
+    <ul>
+      <li *ngFor="let log of logs.severities">{{ log | json }}</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Client IPs</h2>
+    <ul>
+      <li *ngFor="let log of logs.clients">{{ log | json }}</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Endpoints</h2>
+    <ul>
+      <li *ngFor="let log of logs.endpoints">{{ log | json }}</li>
+    </ul>
+  </div>
+  <div>
+    <h2>User Agents</h2>
+    <ul>
+      <li *ngFor="let log of logs.user_agents">{{ log | json }}</li>
+    </ul>
+  </div>
+  
